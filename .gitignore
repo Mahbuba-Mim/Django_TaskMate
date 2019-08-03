@@ -1,0 +1,7 @@
+*.pyc
+*~
+__pycache__
+tmenv
+db.sqlite3
+/static
+.vscode

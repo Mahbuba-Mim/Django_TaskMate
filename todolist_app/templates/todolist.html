@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Todo List Manager - Task Mate</title>
+{% endblock title %}
+
+{% block content %}
+    <div class='container'>
+    </br>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                 </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form method="POST" class="row">
+        {% csrf_token %}
+            <span class="label label-success arrowed col-lg-2" style="background-color:#99ffdf;">Your Today's Task</span>
+            <!--<label class="col-lg-2" for="exampleInputTask">Add Task</label>-->
+            <input type="text" class="form-control col-lg-8" id="exampleInputTask"  name='task' placeholder="Input New Task">
+            <button type="submit" class="btn btn-primary col-lg-2">Add Task</button>
+    </form>
+    </br>
+    </br>
+     <table class="table">
+        <thead class="thead-dark">
+        <tr class='row'>
+            <th class="col-7">Task</th>
+            <th class="col-3">Done</th>
+            <th class="col-1">Edit</th>
+            <th class="col-1">Delete</th>
+            </tr>
+         </thead>
+
+         <tbody>
+            {% if  allTask%}
+                {% for obj in allTask %}
+                    {% if obj.done %}
+                        <tr class='table-success row'>  
+                            <td class="col-7">{{ obj.task }}</td>
+                            <td class="col-3"><a href="{% url 'pending_task' obj.id %}"><button type="button" class="btn btn-outline-primary">Mark this Pending</button></a></td>
+                            <td class="col-1"><a href="{% url 'edit_task' obj.id %}"><button type="button" class="btn btn-outline-warning">Edit</button></a></td>
+                            <td class="col-1"><a href="{% url 'delete_task' obj.id %}"><button type="button" class="btn btn-outline-danger">Delete</button></a></td>
+                        </tr>
+                    {% else %}
+                        <tr class='row'>  
+                            <td class="col-7">{{ obj.task }}</td>
+                            <td class="col-3"><a href="{% url 'complete_task' obj.id %}"><button type="button" class="btn btn-outline-success">Mark this Completed</button></a></td>
+                            <td class="col-1"><a href="{% url 'edit_task' obj.id %}"><button type="button" class="btn btn-outline-warning">Edit</button></a></td>
+                            <td class="col-1"><a href="{% url 'delete_task' obj.id %}"><button type="button" class="btn btn-outline-danger">Delete</button></a></td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+            <li class="page-item"><a class="page-link" href="?pg=1">First</a></li>
+            {% if allTask.has_previous %}
+                <li class="page-item"><a class="page-link" href="?pg={{ allTask.previous_page_number}}"><</a></li>
+                <li class="page-item"><a class="page-link" href="?pg={{ allTask.previous_page_number}}">{{ allTask.previous_page_number}}</a></li>
+            {% endif %}
+            <li class="page-item"><a class="page-link" href="?pg={{ allTask.number}}">{{ allTask.number}}</a></li>
+            {% if allTask.has_next %}
+                <li class="page-item"><a class="page-link" href="?pg={{ allTask.next_page_number}}">{{ allTask.next_page_number}}</a></li>
+                <li class="page-item"><a class="page-link" href="?pg={{ allTask.next_page_number}}">></a></li>
+            {% endif %}
+            <li class="page-item"><a class="page-link" href="?pg={{ allTask.paginator.num_pages}}">Last</a></li>
+        </ul>
+    </nav>
+    </div>
+{% endblock content %}
